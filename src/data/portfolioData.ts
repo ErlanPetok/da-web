@@ -18,10 +18,10 @@ export const PROFILE = {
   githubUrl: 'https://github.com/ErlanPetok',
   heroAvatarUrl:
     'https://images.hiwaifu.com/redraw/avatar/51/51b65905e1c1a6be2caff1a4e119dfb9.webp?image_process=resize,w_640',
-  heroAvatarFallback: '/assets/portfolio/art-1-full.webp',
+  heroAvatarFallback: './assets/portfolio/art-1-full.webp',
   aboutPortraitUrl:
     'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjtjBJyjXQgWYNt9izdgEBpu7B8J-BlduPEW_9fznJnQ&s=10',
-  aboutPortraitFallback: '/assets/portfolio/art-4-full.webp',
+  aboutPortraitFallback: './assets/portfolio/art-4-full.webp',
   music: {
     youtubeId: '7IdYeEh8i8g',
     title: 'Amore',
@@ -201,7 +201,7 @@ export const PROJECTS: ProjectItem[] = [
       en: 'An actively maintained personal wallet tracker PWA. It supports income and expense tracking, customizable denominations, local data storage, backup tools, themes, and an evolving Hoshino-themed interface. This project is ongoing and continues to receive updates.',
     },
     tags: ['PWA', 'HTML', 'CSS', 'JavaScript', 'LocalStorage', 'IndexedDB'],
-    image: '/assets/portfolio/wallet-tracker.jpg',
+    image: './assets/portfolio/wallet-tracker.jpg',
     demoUrl: 'https://wallethingy.erlanpetok.web.id',
     githubUrl: 'https://github.com/ErlanPetok/Wallet-thingy',
     status: 'ongoing',
@@ -227,7 +227,7 @@ export const PROJECTS: ProjectItem[] = [
       en: 'A browser-based fishing game built with HTML, CSS, and JavaScript. The playable demo is available online. This is presented as a completed project; the gameplay preview can be opened through the live demo.',
     },
     tags: ['HTML', 'CSS', 'JavaScript', 'Game Development', 'DOM'],
-    image: '/assets/portfolio/fishing-adventure.svg',
+    image: './assets/portfolio/fishing-adventure.svg',
     demoUrl: 'https://erlanpetok.github.io/fishing-game/',
     githubUrl: 'https://github.com/ErlanPetok',
     status: 'complete',
@@ -242,8 +242,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '135070826',
     indexCode: '01',
-    thumb: '/assets/portfolio/art-0-thumb.webp',
-    full: '/assets/portfolio/art-0-full.webp',
+    thumb: './assets/portfolio/art-0-thumb.webp',
+    full: './assets/portfolio/art-0-full.webp',
     title: { id: 'Iblis Kecil yang Ceria', en: 'Cheerful Little Devil' },
     desc: {
       id: 'Pose ceria dengan sayap kelelawar, ekor berujung hati, dan sepatu bot kuning cerah di atas latar pink dan pastel yang ramai. Warnanya dibuat seriang karakternya.',
@@ -253,8 +253,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '135559025',
     indexCode: '02',
-    thumb: '/assets/portfolio/art-1-thumb.webp',
-    full: '/assets/portfolio/art-1-full.webp',
+    thumb: './assets/portfolio/art-1-thumb.webp',
+    full: './assets/portfolio/art-1-full.webp',
     title: { id: 'Senja di Tepi Danau', en: 'Dusk by the Lake' },
     desc: {
       id: 'Rambut pink panjang dan mata berbeda warna di depan danau dan pegunungan yang memudar ke senja keunguan. Latar bersapuan kuas berpadu dengan garis karakter yang bersih.',
@@ -264,8 +264,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '138446926',
     indexCode: '03',
-    thumb: '/assets/portfolio/art-2-thumb.webp',
-    full: '/assets/portfolio/art-2-full.webp',
+    thumb: './assets/portfolio/art-2-thumb.webp',
+    full: './assets/portfolio/art-2-full.webp',
     title: { id: 'Tatapan di Bawah Matahari', en: 'Sunlit Glance' },
     desc: {
       id: 'Tatapan dari dekat sambil menoleh dengan cahaya hangat dari belakang pada rambut dan langit biru yang cerah. Pendar cahaya di sekitar rambut membangun suasananya.',
@@ -275,8 +275,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '139964960',
     indexCode: '04',
-    thumb: '/assets/portfolio/art-3-thumb.webp',
-    full: '/assets/portfolio/art-3-full.webp',
+    thumb: './assets/portfolio/art-3-thumb.webp',
+    full: './assets/portfolio/art-3-full.webp',
     title: { id: 'Cahaya Lembut', en: 'Soft Glow' },
     desc: {
       id: 'Cahaya hangat jatuh pada rambut dan wajah di depan langit gelap berasap. Kontras antara cahaya dan bayangan memberi potret ini kesan dramatis.',
@@ -286,8 +286,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '140439370',
     indexCode: '05',
-    thumb: '/assets/portfolio/art-4-thumb.webp',
-    full: '/assets/portfolio/art-4-full.webp',
+    thumb: './assets/portfolio/art-4-thumb.webp',
+    full: './assets/portfolio/art-4-full.webp',
     title: { id: 'Senyum Kecil yang Bangga', en: 'Proud Little Smile' },
     desc: {
       id: 'Potret dekat yang jenaka dengan mata oranye dan biru, kilau bintang, serta seragam sekolah berdasi cyan. Garis tegas dan warna cerah membuatnya terasa ringan.',
@@ -297,8 +297,8 @@ export const ART_ITEMS: ArtworkItem[] = [
   {
     id: '152031687',
     indexCode: '06',
-    thumb: '/assets/portfolio/art-5-thumb.webp',
-    full: '/assets/portfolio/art-5-full.webp',
+    thumb: './assets/portfolio/art-5-thumb.webp',
+    full: './assets/portfolio/art-5-full.webp',
     title: { id: 'Mahkota Bunga Daisy', en: 'Daisy Crown' },
     desc: {
       id: 'Rambut pendek, mata hijau, dan mahkota bunga daisy di depan gradasi biru lembut. Palet yang tenang dan cerah dengan detail bunga yang halus.',
@@ -540,6 +540,13 @@ export const UI_COPY = {
       hideVideo: 'Sembunyikan video',
       ytOpen: 'Buka di YouTube',
       hostHint: 'Pemutaran YouTube disematkan mungkin dibatasi. Anda dapat membukanya langsung.',
+      modeYt: 'YouTube',
+      modeSynth: 'Sakura Synth',
+      synthTitle: 'Sakura Music Box',
+      synthArtist: 'Built-in Synth ♪',
+      synthHint: 'Musik synth bawaan diputar langsung di browser tanpa perlu YouTube.',
+      sfxOn: 'Suara UI: Aktif',
+      sfxOff: 'Suara UI: Nonaktif',
     },
   },
   en: {
@@ -673,6 +680,13 @@ export const UI_COPY = {
       hideVideo: 'Hide video',
       ytOpen: 'Open on YouTube',
       hostHint: 'Embedded YouTube playback may be restricted. Open directly on YouTube anytime.',
+      modeYt: 'YouTube',
+      modeSynth: 'Sakura Synth',
+      synthTitle: 'Sakura Music Box',
+      synthArtist: 'Built-in Synth ♪',
+      synthHint: 'Built-in pastel synth plays directly in your browser without YouTube.',
+      sfxOn: 'UI Sound: On',
+      sfxOff: 'UI Sound: Off',
     },
   },
 } as const;

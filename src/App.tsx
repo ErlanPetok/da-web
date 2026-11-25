@@ -22,6 +22,13 @@ import {
   type ProjectItem,
   type Theme,
 } from './utils/portfolio';
+import {
+  playClick,
+  playClose,
+  playOpen,
+  playToggle,
+  setSfxEnabled as syncEngineSfx,
+} from './utils/soundEngine';
 
 const SECTION_IDS = [
   'home',
@@ -53,6 +60,15 @@ export default function App() {
     }
   });
 
+  const [sfxEnabled, setSfxEnabled] = useState<boolean>(() => {
+    try {
+      const saved = localStorage.getItem('sfxEnabled');
+      return saved !== 'false';
+    } catch {
+      return true;
+    }
+  });
+
   const [activeSection, setActiveSection] = useState<string>('home');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [showBackToTop, setShowBackToTop] = useState(false);
@@ -78,6 +94,27 @@ export default function App() {
       // ignore storage failure
     }
   }, [theme]);
+
+  useEffect(() => {
+    syncEngineSfx(sfxEnabled);
+    try {
+      localStorage.setItem('sfxEnabled', String(sfxEnabled));
+    } catch {
+      // ignore storage failure
+    }
+  }, [sfxEnabled]);
+
+  useEffect(() => {
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement | null;
+      const interactive = target?.closest('button, a, [role="button"]');
+      if (!interactive) return;
+      if (interactive.closest('[data-sfx-handled="true"]')) return;
+      playClick();
+    };
+    document.addEventListener('click', handleGlobalClick);
+    return () => document.removeEventListener('click', handleGlobalClick);
+  }, []);
 
   useEffect(() => {
     let raf = 0;
@@ -127,6 +164,14 @@ export default function App() {
     setTheme(next);
   };
 
+  const handleToggleSfx = () => {
+    const next = !sfxEnabled;
+    setSfxEnabled(next);
+    syncEngineSfx(next);
+    playToggle(next, true);
+    showToast(next ? UI_COPY[lang].music.sfxOn : UI_COPY[lang].music.sfxOff);
+  };
+
   const tFooter = UI_COPY[lang].footer;
 
   return (
@@ -142,9 +187,11 @@ export default function App() {
         <Header
           lang={lang}
           theme={theme}
+          sfxEnabled={sfxEnabled}
           activeSection={activeSection}
           onToggleLang={handleToggleLang}
           onToggleTheme={handleToggleTheme}
+          onToggleSfx={handleToggleSfx}
         />
 
         <main>
@@ -152,11 +199,26 @@ export default function App() {
           <AboutPoster lang={lang} />
           <SkillsConstellation
             lang={lang}
-            onOpenArtworkGallery={() => setCreativeModal({ kind: 'art', index: 0 })}
+            onOpenArtworkGallery={() => {
+              playOpen();
+              setCreativeModal({ kind: 'art', index: 0 });
+            }}
           />
           <TimelineSection lang={lang} />
-          <ProjectsSection lang={lang} onSelectProject={setSelectedProject} />
-          <CreativeSection lang={lang} onOpenModal={setCreativeModal} />
+          <ProjectsSection
+            lang={lang}
+            onSelectProject={(project) => {
+              playOpen();
+              setSelectedProject(project);
+            }}
+          />
+          <CreativeSection
+            lang={lang}
+            onOpenModal={(state) => {
+              if (state) playOpen();
+              setCreativeModal(state);
+            }}
+          />
           <GitHubSection lang={lang} />
           <ContactSection lang={lang} onToast={showToast} />
         </main>
@@ -225,13 +287,21 @@ export default function App() {
         <ProjectModal
           project={selectedProject}
           lang={lang}
-          onClose={() => setSelectedProject(null)}
+          onClose={() => {
+            playClose();
+            setSelectedProject(null);
+          }}
         />
 
         <CreativeModal
           modalState={creativeModal}
           lang={lang}
-          onChangeState={setCreativeModal}
+          onChangeState={(next) => {
+            if (!next) {
+              playClose();
+            }
+            setCreativeModal(next);
+          }}
         />
       </div>
     </MotionConfig>

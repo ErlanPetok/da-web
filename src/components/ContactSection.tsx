@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import { Check, Copy, ExternalLink, Github, Mail, MapPin, MessageCircle, Phone, Send } from 'lucide-react';
 import { PROFILE, UI_COPY } from '../data/portfolioData';
 import { buildMailtoHref, validateContactForm, type Lang } from '../utils/portfolio';
+import { playError, playSuccess } from '../utils/soundEngine';
 import { MaskedWords, POSTER_EASE, PosterReveal } from './MotionPrimitives';
 import { SectionHeader } from './SectionHeader';
 
@@ -24,9 +25,11 @@ export function ContactSection({ lang, onToast }: ContactSectionProps) {
     try {
       await navigator.clipboard.writeText(value);
       setCopiedField(field);
+      playSuccess();
       onToast(t.copied);
       window.setTimeout(() => setCopiedField((prev) => (prev === field ? null : prev)), 2000);
     } catch {
+      playError();
       onToast(t.copyFail);
     }
   };
@@ -35,9 +38,11 @@ export function ContactSection({ lang, onToast }: ContactSectionProps) {
     e.preventDefault();
     const validation = validateContactForm({ name, email, subject, message }, lang);
     if (!validation.valid) {
+      playError();
       setStatus({ kind: 'error', text: validation.error ?? 'Invalid form input' });
       return;
     }
+    playSuccess();
     setStatus({ kind: 'success', text: t.sentNote });
     const href = buildMailtoHref({ name, email, subject, message });
     window.location.href = href;
@@ -75,6 +80,7 @@ export function ContactSection({ lang, onToast }: ContactSectionProps) {
                   </div>
                   <motion.button
                     type="button"
+                    data-sfx-handled="true"
                     whileTap={{ scale: 0.88 }}
                     onClick={() => handleCopy(PROFILE.email, 'email')}
                     aria-label="Copy email address"
@@ -100,6 +106,7 @@ export function ContactSection({ lang, onToast }: ContactSectionProps) {
                   </div>
                   <motion.button
                     type="button"
+                    data-sfx-handled="true"
                     whileTap={{ scale: 0.88 }}
                     onClick={() => handleCopy(PROFILE.phoneCopy, 'phone')}
                     aria-label="Copy phone number"
@@ -256,6 +263,7 @@ export function ContactSection({ lang, onToast }: ContactSectionProps) {
 
               <motion.button
                 type="submit"
+                data-sfx-handled="true"
                 whileHover={{ y: -2, scale: 1.01 }}
                 whileTap={{ scale: 0.96 }}
                 className="group inline-flex items-center gap-2 bg-[var(--accent)] hover:bg-[var(--accent-hover)] text-white font-display font-bold text-xs sm:text-sm uppercase tracking-wider px-6 py-3 border-2 border-[var(--border-strong)] shadow-[4px_4px_0px_var(--border-strong)] cursor-pointer"

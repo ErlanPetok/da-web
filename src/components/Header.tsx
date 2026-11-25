@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'motion/react';
-import { Menu, Moon, Sun, X } from 'lucide-react';
+import { Menu, Moon, Sun, Volume2, VolumeX, X } from 'lucide-react';
 import { PROFILE, UI_COPY } from '../data/portfolioData';
 import type { Lang, Theme } from '../utils/portfolio';
 import { POSTER_EASE } from './MotionPrimitives';
@@ -8,9 +8,11 @@ import { POSTER_EASE } from './MotionPrimitives';
 interface HeaderProps {
   lang: Lang;
   theme: Theme;
+  sfxEnabled: boolean;
   activeSection: string;
   onToggleLang: () => void;
   onToggleTheme: () => void;
+  onToggleSfx: () => void;
 }
 
 const NAV_IDS = ['home', 'about', 'skills', 'timeline', 'projects', 'creative', 'github', 'contact'] as const;
@@ -18,9 +20,11 @@ const NAV_IDS = ['home', 'about', 'skills', 'timeline', 'projects', 'creative', 
 export function Header({
   lang,
   theme,
+  sfxEnabled,
   activeSection,
   onToggleLang,
   onToggleTheme,
+  onToggleSfx,
 }: HeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const t = UI_COPY[lang].nav;
@@ -105,6 +109,43 @@ export function Header({
                 className="inline-block"
               >
                 {lang === 'id' ? 'EN' : 'ID'}
+              </motion.span>
+            </AnimatePresence>
+          </motion.button>
+
+          <motion.button
+            type="button"
+            data-sfx-handled="true"
+            whileHover={{ y: -1 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={onToggleSfx}
+            aria-pressed={sfxEnabled}
+            aria-label={
+              sfxEnabled
+                ? lang === 'id'
+                  ? 'Matikan suara UI'
+                  : 'Mute UI sound effects'
+                : lang === 'id'
+                  ? 'Aktifkan suara UI'
+                  : 'Enable UI sound effects'
+            }
+            title={sfxEnabled ? UI_COPY[lang].music.sfxOn : UI_COPY[lang].music.sfxOff}
+            className={`w-9 h-9 border-2 border-[var(--border-strong)] transition-colors flex items-center justify-center cursor-pointer ${
+              sfxEnabled
+                ? 'bg-[var(--bg-surface)] text-[var(--accent)] hover:bg-[var(--accent)] hover:text-white'
+                : 'bg-[var(--bg-surface-soft)] text-[var(--ink-muted)] hover:bg-[var(--accent)] hover:text-white'
+            }`}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.span
+                key={sfxEnabled ? 'sfx-on' : 'sfx-off'}
+                initial={{ scale: 0.6, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.6, opacity: 0 }}
+                transition={{ duration: 0.16, ease: POSTER_EASE }}
+                className="flex items-center justify-center"
+              >
+                {sfxEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
               </motion.span>
             </AnimatePresence>
           </motion.button>

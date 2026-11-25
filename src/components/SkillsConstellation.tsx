@@ -8,6 +8,7 @@ import {
   type Lang,
   type SkillNode,
 } from '../utils/portfolio';
+import { playStarNote } from '../utils/soundEngine';
 import { MaskedWords, POSTER_EASE, PosterReveal } from './MotionPrimitives';
 import { SectionHeader } from './SectionHeader';
 
@@ -48,7 +49,8 @@ export function SkillsConstellation({
     .map((id) => SKILL_NODES.find((n) => n.id === id)?.label[lang])
     .filter(Boolean);
 
-  const handleTogglePin = (id: SkillNode['id']) => {
+  const handleTogglePin = (id: SkillNode['id'], index: number) => {
+    playStarNote(index);
     setPinnedId((prev) => (prev === id ? null : id));
   };
 
@@ -107,12 +109,13 @@ export function SkillsConstellation({
                   <motion.button
                     key={node.id}
                     type="button"
+                    data-sfx-handled="true"
                     aria-pressed={pinnedId === node.id}
                     onMouseEnter={() => setHoveredId(node.id)}
                     onMouseLeave={() => setHoveredId(null)}
                     onFocus={() => setHoveredId(node.id)}
                     onBlur={() => setHoveredId(null)}
-                    onClick={() => handleTogglePin(node.id)}
+                    onClick={() => handleTogglePin(node.id, idx)}
                     style={{ left: `${node.x}%`, top: `${node.y}%` }}
                     initial={{ opacity: 0, scale: 0.78 }}
                     whileInView={{ opacity: 1, scale: 1 }}
@@ -148,15 +151,16 @@ export function SkillsConstellation({
 
             {/* Mobile Clean Selectable Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:hidden relative z-10">
-              {SKILL_NODES.map((node) => {
+              {SKILL_NODES.map((node, idx) => {
                 const isActive = node.id === activeId;
                 return (
                   <motion.button
                     key={node.id}
                     type="button"
+                    data-sfx-handled="true"
                     aria-pressed={pinnedId === node.id}
                     whileTap={{ scale: 0.96 }}
-                    onClick={() => handleTogglePin(node.id)}
+                    onClick={() => handleTogglePin(node.id, idx)}
                     className={`p-3.5 border-2 text-left flex items-center gap-3 transition-all cursor-pointer ${
                       isActive
                         ? 'bg-[var(--accent)] text-white border-[var(--border-strong)] shadow-[3px_3px_0px_var(--border-strong)]'
