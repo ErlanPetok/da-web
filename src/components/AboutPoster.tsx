@@ -38,7 +38,11 @@ export function AboutPoster({ lang }: AboutPosterProps) {
                       setImgSrc(PROFILE.aboutPortraitFallback);
                     }
                   }}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-106"
+                />
+                <div
+                  aria-hidden="true"
+                  className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]"
                 />
               </div>
               <div className="mt-3 flex flex-wrap gap-2">
@@ -62,13 +66,17 @@ export function AboutPoster({ lang }: AboutPosterProps) {
           {/* Editorial Bio + Specs Grid */}
           <PosterReveal direction="right" delay={0.1} className="lg:col-span-7 poster-box p-6 sm:p-8">
             <motion.div
-              initial={{ opacity: 0, x: -10 }}
-              whileInView={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, x: -12, scale: 0.94 }}
+              whileInView={{ opacity: 1, x: 0, scale: 1 }}
               viewport={{ once: true, amount: 'some' }}
+              whileHover={{ scale: 1.04, x: 2 }}
               transition={{ duration: 0.4, ease: POSTER_EASE }}
-              className="inline-block bg-[var(--accent)] text-white font-mono-poster text-xs font-bold uppercase tracking-widest px-2.5 py-1 mb-4"
+              className="inline-flex items-center gap-2 bg-[var(--accent)] text-white font-mono-poster text-xs font-bold uppercase tracking-widest px-2.5 py-1 mb-4 shadow-[2px_2px_0px_var(--border-strong)]"
             >
-              {t.labels.freelance}: {t.labels.freelanceVal}
+              <span className="w-2 h-2 rounded-full bg-[#bbf7d0] animate-pulse" aria-hidden="true" />
+              <span>
+                {t.labels.freelance}: {t.labels.freelanceVal}
+              </span>
             </motion.div>
             <h3 className="font-display text-2xl sm:text-3xl font-black text-[var(--ink)] tracking-tight mb-4">
               <MaskedWords key={t.role} text={t.role} stagger={0.04} />

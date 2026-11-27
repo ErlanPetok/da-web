@@ -158,20 +158,61 @@ export function PosterReveal({
 }: PosterRevealProps) {
   const initialOffset =
     direction === 'left'
-      ? { x: -24, y: 0 }
+      ? { x: -28, y: 0, scale: 0.98 }
       : direction === 'right'
-      ? { x: 24, y: 0 }
-      : { x: 0, y: 22 };
+      ? { x: 28, y: 0, scale: 0.98 }
+      : { x: 0, y: 24, scale: 0.98 };
 
   return (
     <motion.div
       className={className}
       initial={{ opacity: 0, ...initialOffset }}
-      whileInView={{ opacity: 1, x: 0, y: 0 }}
+      whileInView={{ opacity: 1, x: 0, y: 0, scale: 1 }}
       viewport={{ once: true, amount: 'some' }}
-      transition={{ duration: 0.55, delay, ease: POSTER_EASE }}
+      transition={{ duration: 0.58, delay, ease: POSTER_EASE }}
     >
       {children}
     </motion.div>
   );
 }
+
+interface PosterMarqueeProps {
+  items: readonly string[];
+  className?: string;
+}
+
+const MARQUEE_SYMBOLS = [
+  { char: '✦', color: 'text-[#df2974] dark:text-[#ff6eb0]' },
+  { char: '♡', color: 'text-[#f43f5e] dark:text-[#fb7185]' },
+  { char: '★', color: 'text-[#f59e0b] dark:text-[#fbbf24]' },
+  { char: '✿', color: 'text-[#8b5cf6] dark:text-[#c4b5fd]' },
+  { char: '♪', color: 'text-[#0ea5e9] dark:text-[#38bdf8]' },
+] as const;
+
+export function PosterMarquee({ items, className = '' }: PosterMarqueeProps) {
+  const track = [...items, ...items];
+  return (
+    <div
+      aria-hidden="true"
+      className={`overflow-hidden border-2 border-[var(--border-strong)] bg-[var(--bg-surface)] shadow-[4px_4px_0px_var(--border-strong)] select-none ${className}`}
+    >
+      <div className="flex w-max animate-marquee py-2.5">
+        {track.map((item, idx) => {
+          const sym = MARQUEE_SYMBOLS[idx % MARQUEE_SYMBOLS.length];
+          return (
+            <div
+              key={`${item}-${idx}`}
+              className="inline-flex items-center gap-4 px-4 font-mono-poster text-xs font-bold uppercase tracking-[0.2em] text-[var(--ink)] whitespace-nowrap"
+            >
+              <span>{item}</span>
+              <span className={`inline-block animate-poster-spin-slow text-sm ${sym.color}`}>
+                {sym.char}
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+

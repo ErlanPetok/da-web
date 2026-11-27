@@ -80,26 +80,30 @@ export function SkillsConstellation({
                 className="absolute inset-0 w-full h-full pointer-events-none"
                 aria-hidden="true"
               >
-                {edges.map((edge, idx) => {
-                  const isHighlighted =
-                    activeId !== null && (edge.from.id === activeId || edge.to.id === activeId);
-                  return (
-                    <motion.line
-                      key={edge.key}
-                      x1={edge.from.x}
-                      y1={edge.from.y}
-                      x2={edge.to.x}
-                      y2={edge.to.y}
-                      stroke={isHighlighted ? 'var(--accent)' : 'var(--border-soft)'}
-                      strokeWidth={isHighlighted ? 0.95 : 0.45}
-                      strokeDasharray={isHighlighted ? 'none' : '1.5 1.5'}
-                      initial={{ pathLength: 0, opacity: 0.4 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      viewport={{ once: true, amount: 'some' }}
-                      transition={{ duration: 0.7, delay: idx * 0.08, ease: POSTER_EASE }}
-                    />
-                  );
-                })}
+                <motion.g
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true, amount: 'some' }}
+                  transition={{ duration: 0.55, ease: POSTER_EASE }}
+                >
+                  {edges.map((edge) => {
+                    const isHighlighted =
+                      activeId !== null && (edge.from.id === activeId || edge.to.id === activeId);
+                    return (
+                      <line
+                        key={edge.key}
+                        x1={edge.from.x}
+                        y1={edge.from.y}
+                        x2={edge.to.x}
+                        y2={edge.to.y}
+                        stroke={isHighlighted ? 'var(--accent)' : 'var(--border-soft)'}
+                        strokeWidth={isHighlighted ? 1.05 : 0.45}
+                        strokeDasharray={isHighlighted ? undefined : '1.5 1.5'}
+                        className="transition-all duration-300 ease-out"
+                      />
+                    );
+                  })}
+                </motion.g>
               </svg>
 
               {SKILL_NODES.map((node, idx) => {
@@ -117,16 +121,20 @@ export function SkillsConstellation({
                     onBlur={() => setHoveredId(null)}
                     onClick={() => handleTogglePin(node.id, idx)}
                     style={{ left: `${node.x}%`, top: `${node.y}%` }}
-                    initial={{ opacity: 0, scale: 0.78 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0, scale: 0.75, y: 10 }}
+                    whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ once: true, amount: 'some' }}
-                    animate={{ scale: isActive ? 1.06 : 1 }}
+                    animate={{
+                      scale: isActive ? 1.08 : 1,
+                      y: isActive ? -3 : 0,
+                    }}
                     transition={{
                       opacity: { duration: 0.38, delay: idx * 0.06 },
-                      scale: { type: 'spring', stiffness: 360, damping: 24 },
+                      scale: { type: 'spring', stiffness: 380, damping: 20 },
+                      y: { type: 'spring', stiffness: 320, damping: 20 },
                     }}
-                    whileHover={{ scale: 1.08 }}
-                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ scale: 1.1, y: -4 }}
+                    whileTap={{ scale: 0.94 }}
                     className={`absolute -translate-x-1/2 -translate-y-1/2 px-3.5 py-2.5 border-2 transition-colors cursor-pointer flex items-center gap-2.5 text-left ${
                       isActive
                         ? 'bg-[var(--accent)] text-white border-[var(--border-strong)] shadow-[4px_4px_0px_var(--border-strong)] z-20'
@@ -135,7 +143,9 @@ export function SkillsConstellation({
                         : 'bg-[var(--bg-surface)] text-[var(--ink)] border-[var(--border-strong)] hover:border-[var(--accent)] z-10'
                     }`}
                   >
-                    <SkillIcon id={node.id} />
+                    <span className={isActive ? 'animate-poster-pulse' : ''}>
+                      <SkillIcon id={node.id} />
+                    </span>
                     <div>
                       <div className="font-mono-poster text-[9px] font-bold tracking-widest opacity-80 leading-none mb-0.5">
                         {node.code}

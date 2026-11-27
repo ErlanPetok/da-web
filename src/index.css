@@ -68,6 +68,27 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
+/* Vibrant Multi-Hue Pastel Poster Canvas (Inside Hero Border) */
+.hero-poster-vibrant {
+  background-color: #ffd0e6;
+  background-image:
+    radial-gradient(circle at 14% 20%, rgba(255, 198, 138, 0.9) 0%, transparent 45%),
+    radial-gradient(circle at 86% 18%, rgba(160, 234, 255, 0.9) 0%, transparent 47%),
+    radial-gradient(circle at 78% 82%, rgba(212, 168, 255, 0.9) 0%, transparent 47%),
+    radial-gradient(circle at 22% 84%, rgba(255, 120, 184, 0.82) 0%, transparent 45%),
+    linear-gradient(125deg, #ffadd6 0%, #ffd3b3 24%, #ffefb5 48%, #b8f5ec 74%, #d6beff 100%);
+}
+
+.dark .hero-poster-vibrant {
+  background-color: #2f1024;
+  background-image:
+    radial-gradient(circle at 14% 22%, rgba(255, 102, 178, 0.45) 0%, transparent 48%),
+    radial-gradient(circle at 85% 20%, rgba(92, 198, 255, 0.36) 0%, transparent 48%),
+    radial-gradient(circle at 80% 82%, rgba(173, 118, 255, 0.42) 0%, transparent 48%),
+    radial-gradient(circle at 20% 82%, rgba(255, 152, 102, 0.35) 0%, transparent 46%),
+    linear-gradient(125deg, #4b1538 0%, #5e1d44 26%, #45205e 54%, #1e315c 80%, #4d1942 100%);
+}
+
 /* Poster Fold Lines & Subtle Halftone Texture */
 .poster-creases {
   background-image:
@@ -86,22 +107,22 @@
 }
 
 .poster-halftone {
-  background-image: radial-gradient(circle, rgba(223, 41, 116, 0.11) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(223, 41, 116, 0.14) 1.1px, transparent 1.1px);
   background-size: 14px 14px;
 }
 
 .dark .poster-halftone {
-  background-image: radial-gradient(circle, rgba(255, 141, 194, 0.11) 1px, transparent 1px);
+  background-image: radial-gradient(circle, rgba(255, 141, 194, 0.14) 1.1px, transparent 1.1px);
 }
 
 /* Outlined editorial graphic lettering behind hero figure */
 .poster-stroke-text {
   color: transparent;
-  -webkit-text-stroke: 1.75px rgba(255, 255, 255, 0.78);
+  -webkit-text-stroke: 1.75px rgba(255, 255, 255, 0.85);
 }
 
 .dark .poster-stroke-text {
-  -webkit-text-stroke: 1.75px rgba(255, 179, 214, 0.45);
+  -webkit-text-stroke: 1.75px rgba(255, 179, 214, 0.5);
 }
 
 /* Crisp Graphic Poster Box Shadow */
@@ -134,13 +155,33 @@
 .eq-active .eq-bar:nth-child(4) { animation: eqBounce 0.7s ease-in-out infinite 0.1s; }
 
 @keyframes posterFloat {
-  0%, 100% { transform: translateY(0px); }
-  50% { transform: translateY(-7px); }
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(4deg); }
+}
+
+@keyframes posterFloatReverse {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(8px) rotate(-5deg); }
 }
 
 @keyframes posterPulse {
   0%, 100% { transform: scale(1); opacity: 0.85; }
-  50% { transform: scale(1.22); opacity: 1; }
+  50% { transform: scale(1.24); opacity: 1; }
+}
+
+@keyframes posterSpinSlow {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes posterDriftX {
+  0%, 100% { transform: translateX(-1.2%) rotate(-3deg); }
+  50% { transform: translateX(1.2%) rotate(-2.2deg); }
+}
+
+@keyframes marqueeScroll {
+  0% { transform: translateX(0%); }
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes cursorBlink {
@@ -149,11 +190,27 @@
 }
 
 .animate-poster-float {
-  animation: posterFloat 5.5s ease-in-out infinite;
+  animation: posterFloat 4.8s ease-in-out infinite;
+}
+
+.animate-poster-float-reverse {
+  animation: posterFloatReverse 5.6s ease-in-out infinite;
 }
 
 .animate-poster-pulse {
-  animation: posterPulse 2.2s ease-in-out infinite;
+  animation: posterPulse 2.1s ease-in-out infinite;
+}
+
+.animate-poster-spin-slow {
+  animation: posterSpinSlow 16s linear infinite;
+}
+
+.animate-poster-drift {
+  animation: posterDriftX 8s ease-in-out infinite;
+}
+
+.animate-marquee {
+  animation: marqueeScroll 24s linear infinite;
 }
 
 .animate-cursor-blink {
@@ -164,9 +221,14 @@
   html {
     scroll-behavior: auto;
   }
+  .hero-poster-vibrant,
   .eq-active .eq-bar,
   .animate-poster-float,
+  .animate-poster-float-reverse,
   .animate-poster-pulse,
+  .animate-poster-spin-slow,
+  .animate-poster-drift,
+  .animate-marquee,
   .animate-cursor-blink {
     animation: none;
   }

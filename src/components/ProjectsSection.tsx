@@ -129,10 +129,14 @@ export function ProjectsSection({ lang, onSelectProject }: ProjectsSectionProps)
                         src={project.image}
                         alt={project.title}
                         loading="eager"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-107 transition-transform duration-500"
+                      />
+                      <div
+                        aria-hidden="true"
+                        className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]"
                       />
                       <div className="absolute inset-0 bg-[var(--accent)]/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
-                        <span className="inline-flex items-center gap-2 bg-white text-[var(--ink)] border-2 border-[var(--border-strong)] px-4 py-2 font-display font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_var(--border-strong)] transform translate-y-2 group-hover:translate-y-0 transition-transform duration-200">
+                        <span className="inline-flex items-center gap-2 bg-white text-[var(--ink)] border-2 border-[var(--border-strong)] px-4 py-2 font-display font-black text-xs uppercase tracking-wider shadow-[3px_3px_0px_var(--border-strong)] transform translate-y-2 scale-95 group-hover:translate-y-0 group-hover:scale-100 transition-transform duration-200">
                           <Eye className="w-4 h-4 text-[var(--accent)]" aria-hidden="true" />
                           <span>{t.inspect}</span>
                         </span>
@@ -154,7 +158,7 @@ export function ProjectsSection({ lang, onSelectProject }: ProjectsSectionProps)
                         {project.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-2 py-0.5 border border-[var(--border-strong)] bg-[var(--bg-surface-soft)] font-mono-poster text-[11px] font-bold text-[var(--ink)] group-hover:border-[var(--accent)] transition-colors"
+                            className="px-2 py-0.5 border border-[var(--border-strong)] bg-[var(--bg-surface-soft)] font-mono-poster text-[11px] font-bold text-[var(--ink)] group-hover:border-[var(--accent)] group-hover:-translate-y-0.5 transition-all"
                           >
                             {tag}
                           </span>

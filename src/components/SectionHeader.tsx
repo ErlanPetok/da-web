@@ -36,12 +36,13 @@ export function SectionHeader({ tag, jpSub, title, subtitle }: SectionHeaderProp
 
           <motion.div
             initial={{ opacity: 0 }}
-            whileInView={{ opacity: 0.75 }}
+            whileInView={{ opacity: 0.8 }}
             viewport={{ once: true, amount: 'some' }}
             transition={{ duration: 0.5, delay: 0.15 }}
             className="hidden sm:flex items-center gap-2 font-mono-poster text-[11px] tracking-[0.25em] text-[var(--ink-muted)] select-none"
             aria-hidden="true"
           >
+            <span className="inline-block text-[#8b5cf6] dark:text-[#c4b5fd] animate-poster-spin-slow">✦</span>
             <span>11</span>
             <span>01 0 1</span>
             <span className="inline-block text-[var(--accent)] animate-poster-pulse">♡</span>
@@ -49,15 +50,17 @@ export function SectionHeader({ tag, jpSub, title, subtitle }: SectionHeaderProp
           </motion.div>
         </div>
 
-        {/* Drawing hairline rule */}
+        {/* Drawing hairline rule with colorful gradient highlight */}
         <motion.div
           aria-hidden="true"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, amount: 'some' }}
-          transition={{ duration: 0.65, ease: POSTER_EASE }}
-          className="origin-left absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--border-strong)]"
-        />
+          transition={{ duration: 0.7, ease: POSTER_EASE }}
+          className="origin-left absolute bottom-0 left-0 right-0 h-[2px] bg-[var(--border-strong)] overflow-hidden"
+        >
+          <span className="block h-full w-32 bg-gradient-to-r from-[#ff4d94] via-[#f59e0b] to-[#38bdf8] opacity-90" />
+        </motion.div>
       </div>
 
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-2">

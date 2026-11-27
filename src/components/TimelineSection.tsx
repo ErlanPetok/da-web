@@ -40,24 +40,25 @@ export function TimelineSection({ lang }: TimelineSectionProps) {
                   {/* Animated Star Node Marker */}
                   <motion.div
                     aria-hidden="true"
-                    initial={{ scale: 0, rotate: -90 }}
+                    initial={{ scale: 0, rotate: -120 }}
                     whileInView={{ scale: 1, rotate: 0 }}
                     viewport={{ once: true, amount: 'some' }}
+                    whileHover={{ scale: 1.25, rotate: 90 }}
                     transition={{
                       type: 'spring',
                       stiffness: 340,
-                      damping: 20,
+                      damping: 18,
                       delay: index * 0.07,
                     }}
-                    className="absolute left-4 md:left-1/2 -translate-x-1/2 w-5 h-5 bg-[var(--accent)] border-2 border-[var(--border-strong)] flex items-center justify-center text-[10px] text-white font-bold z-10 top-6 md:top-1/2 md:-translate-y-1/2"
+                    className="absolute left-4 md:left-1/2 -translate-x-1/2 w-6 h-6 bg-[var(--accent)] border-2 border-[var(--border-strong)] flex items-center justify-center text-[11px] text-white font-bold z-10 top-6 md:top-1/2 md:-translate-y-1/2 shadow-[2px_2px_0px_var(--border-strong)]"
                   >
-                    ✦
+                    <span className="animate-poster-spin-slow inline-block">✦</span>
                   </motion.div>
 
                   {/* Card sliding in from left/right */}
                   <motion.div
-                    initial={{ opacity: 0, x: isLeft ? -28 : 28 }}
-                    whileInView={{ opacity: 1, x: 0 }}
+                    initial={{ opacity: 0, x: isLeft ? -32 : 32, scale: 0.97 }}
+                    whileInView={{ opacity: 1, x: 0, scale: 1 }}
                     viewport={{ once: true, amount: 'some' }}
                     transition={{ duration: 0.52, delay: index * 0.07, ease: POSTER_EASE }}
                     className={`w-full pl-12 md:pl-0 md:w-[calc(50%-2rem)] ${
@@ -65,9 +66,9 @@ export function TimelineSection({ lang }: TimelineSectionProps) {
                     }`}
                   >
                     <motion.article
-                      whileHover={{ y: -3 }}
-                      transition={{ duration: 0.2 }}
-                      className="poster-box p-5 sm:p-6"
+                      whileHover={{ y: -4, x: isLeft ? 3 : -3 }}
+                      transition={{ type: 'spring', stiffness: 320, damping: 22 }}
+                      className="poster-box p-5 sm:p-6 group"
                     >
                       <div className="flex items-center justify-between gap-2 mb-3 border-b border-[var(--border-soft)] pb-2">
                         <span className="bg-[var(--accent)] text-white font-mono-poster text-xs font-bold uppercase tracking-wider px-2.5 py-0.5">

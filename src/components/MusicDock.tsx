@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import { ChevronDown, ChevronUp, ExternalLink, Pause, Play, Sparkles, Volume2 } from 'lucide-react';
 import { PROFILE, UI_COPY } from '../data/portfolioData';
 import type { Lang } from '../utils/portfolio';
@@ -9,7 +9,6 @@ import {
   startSynthBgm,
   stopSynthBgm,
 } from '../utils/soundEngine';
-import { POSTER_EASE } from './MotionPrimitives';
 
 interface MusicDockProps {
   lang: Lang;
@@ -18,7 +17,7 @@ interface MusicDockProps {
   onToggleExpanded: () => void;
 }
 
-type AudioMode = 'synth' | 'youtube';
+type AudioMode = 'youtube' | 'synth';
 
 export function MusicDock({
   lang,
@@ -27,30 +26,115 @@ export function MusicDock({
   onToggleExpanded,
 }: MusicDockProps) {
   const t = UI_COPY[lang].music;
-  const [mode, setMode] = useState<AudioMode>('synth');
-  const [playing, setPlaying] = useState(false);
+  const [mode, setMode] = useState<AudioMode>('youtube');
+  const [playing, setPlaying] = useState(true);
   const [volume, setVolume] = useState(60);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const userPausedRef = useRef(false);
+  const interactedRef = useRef(false);
+
+  const sendYtCommand = useCallback((func: string, args: unknown[] = []) => {
+    const win = iframeRef.current?.contentWindow;
+    if (!win) return;
+    win.postMessage(
+      JSON.stringify({
+        event: 'command',
+        func,
+        args,
+      }),
+      '*'
+    );
+  }, []);
+
+  const embedUrl = useMemo(() => {
+    const params = new URLSearchParams({
+      rel: '0',
+      modestbranding: '1',
+      enablejsapi: '1',
+      autoplay: '1',
+      mute: '1',
+      playsinline: '1',
+      loop: '1',
+      playlist: PROFILE.music.youtubeId,
+    });
+    if (typeof window !== 'undefined' && window.location.origin.startsWith('http')) {
+      params.set('origin', window.location.origin);
+    }
+    return `https://www.youtube.com/embed/${PROFILE.music.youtubeId}?${params.toString()}`;
+  }, []);
+
+  const watchUrl = `https://www.youtube.com/watch?v=${PROFILE.music.youtubeId}`;
 
   useEffect(() => {
     setMasterVolume(volume / 100);
-  }, [volume]);
+    if (mode === 'youtube') {
+      sendYtCommand('setVolume', [volume]);
+    }
+  }, [volume, mode, sendYtCommand]);
 
+  // Keep synth loop and YouTube playback synced with mode + playing state
   useEffect(() => {
     if (mode === 'synth' && playing) {
+      sendYtCommand('pauseVideo');
       startSynthBgm();
     } else {
       stopSynthBgm();
+      if (mode === 'youtube') {
+        if (playing) {
+          sendYtCommand('unMute');
+          sendYtCommand('setVolume', [volume]);
+          sendYtCommand('playVideo');
+        } else {
+          sendYtCommand('pauseVideo');
+        }
+      }
     }
     return () => {
       stopSynthBgm();
     };
-  }, [mode, playing]);
+  }, [mode, playing, volume, sendYtCommand]);
+
+  // Trigger unmuted YouTube playback on the user's very first interaction if browser blocked initial autoplay
+  useEffect(() => {
+    const handleFirstInteraction = (e: Event) => {
+      if (interactedRef.current) return;
+      interactedRef.current = true;
+      if (userPausedRef.current) return;
+
+      // Don't hijack if the user's very first click was the Play/Pause button itself
+      const target = e.target as HTMLElement | null;
+      if (target?.closest('[data-music-play-btn="true"]')) return;
+
+      setPlaying(true);
+      if (mode === 'youtube') {
+        sendYtCommand('unMute');
+        sendYtCommand('setVolume', [volume]);
+        sendYtCommand('playVideo');
+      } else {
+        startSynthBgm();
+      }
+    };
+
+    window.addEventListener('pointerdown', handleFirstInteraction, { capture: true, once: true });
+    window.addEventListener('keydown', handleFirstInteraction, { capture: true, once: true });
+    return () => {
+      window.removeEventListener('pointerdown', handleFirstInteraction, { capture: true });
+      window.removeEventListener('keydown', handleFirstInteraction, { capture: true });
+    };
+  }, [mode, volume, sendYtCommand]);
 
   const handleTogglePlay = () => {
     const next = !playing;
+    userPausedRef.current = !next;
     setPlaying(next);
-    if (mode === 'youtube' && next && !expanded) {
-      onToggleExpanded();
+    if (mode === 'youtube') {
+      if (next) {
+        sendYtCommand('unMute');
+        sendYtCommand('setVolume', [volume]);
+        sendYtCommand('playVideo');
+      } else {
+        sendYtCommand('pauseVideo');
+      }
     }
   };
 
@@ -58,15 +142,17 @@ export function MusicDock({
     if (nextMode === mode) return;
     playClick();
     setMode(nextMode);
-    if (nextMode === 'youtube' && playing && !expanded) {
-      onToggleExpanded();
-    }
   };
 
-  const embedUrl = `https://www.youtube.com/embed/${PROFILE.music.youtubeId}?rel=0&modestbranding=1&autoplay=${
-    playing && mode === 'youtube' ? 1 : 0
-  }`;
-  const watchUrl = `https://www.youtube.com/watch?v=${PROFILE.music.youtubeId}`;
+  const handleIframeLoad = () => {
+    if (mode === 'youtube' && playing && !userPausedRef.current) {
+      window.setTimeout(() => {
+        sendYtCommand('setVolume', [volume]);
+        sendYtCommand('unMute');
+        sendYtCommand('playVideo');
+      }, 250);
+    }
+  };
 
   return (
     <aside
@@ -75,84 +161,89 @@ export function MusicDock({
         visibleOnMobile ? 'block' : 'hidden sm:block'
       }`}
     >
-      <AnimatePresence>
-        {expanded && (
-          <motion.div
-            initial={{ opacity: 0, y: 12, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.96 }}
-            transition={{ duration: 0.22, ease: POSTER_EASE }}
-            className="mb-2 poster-box p-2.5 bg-[var(--bg-surface)] w-[290px] sm:w-[310px]"
+      {/* Keep YouTube iframe mounted even when collapsed so audio plays seamlessly without reloading */}
+      <div
+        aria-hidden={!expanded}
+        className={
+          expanded
+            ? 'mb-2 poster-box p-2.5 bg-[var(--bg-surface)] w-[290px] sm:w-[310px] transition-all duration-200'
+            : 'w-px h-px overflow-hidden opacity-0 pointer-events-none absolute bottom-0 left-0'
+        }
+      >
+        {/* Audio Source Switcher */}
+        <div className="grid grid-cols-2 gap-1.5 mb-2.5">
+          <button
+            type="button"
+            data-sfx-handled="true"
+            tabIndex={expanded ? 0 : -1}
+            onClick={() => handleSwitchMode('youtube')}
+            className={`px-2 py-1 border border-[var(--border-strong)] font-mono-poster text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-colors ${
+              mode === 'youtube'
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--bg-surface-soft)] text-[var(--ink-muted)] hover:text-[var(--ink)]'
+            }`}
           >
-            {/* Audio Source Switcher */}
-            <div className="grid grid-cols-2 gap-1.5 mb-2.5">
-              <button
-                type="button"
-                data-sfx-handled="true"
-                onClick={() => handleSwitchMode('synth')}
-                className={`px-2 py-1 border border-[var(--border-strong)] font-mono-poster text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors ${
-                  mode === 'synth'
-                    ? 'bg-[var(--accent)] text-white'
-                    : 'bg-[var(--bg-surface-soft)] text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`}
-              >
-                <Sparkles className="w-3 h-3" aria-hidden="true" />
-                <span>{t.modeSynth}</span>
-              </button>
-              <button
-                type="button"
-                data-sfx-handled="true"
-                onClick={() => handleSwitchMode('youtube')}
-                className={`px-2 py-1 border border-[var(--border-strong)] font-mono-poster text-[10px] font-bold uppercase tracking-wider cursor-pointer transition-colors ${
-                  mode === 'youtube'
-                    ? 'bg-[var(--accent)] text-white'
-                    : 'bg-[var(--bg-surface-soft)] text-[var(--ink-muted)] hover:text-[var(--ink)]'
-                }`}
-              >
-                {t.modeYt}
-              </button>
-            </div>
+            {t.modeYt}
+          </button>
+          <button
+            type="button"
+            data-sfx-handled="true"
+            tabIndex={expanded ? 0 : -1}
+            onClick={() => handleSwitchMode('synth')}
+            className={`px-2 py-1 border border-[var(--border-strong)] font-mono-poster text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer transition-colors ${
+              mode === 'synth'
+                ? 'bg-[var(--accent)] text-white'
+                : 'bg-[var(--bg-surface-soft)] text-[var(--ink-muted)] hover:text-[var(--ink)]'
+            }`}
+          >
+            <Sparkles className="w-3 h-3" aria-hidden="true" />
+            <span>{t.modeSynth}</span>
+          </button>
+        </div>
 
-            {mode === 'youtube' ? (
-              <>
-                <div className="aspect-video w-full bg-[#1c0914] border border-[var(--border-soft)] overflow-hidden mb-2">
-                  <iframe
-                    title={`${PROFILE.music.title} — ${PROFILE.music.artist}`}
-                    src={embedUrl}
-                    allow="autoplay; encrypted-media; picture-in-picture"
-                    referrerPolicy="strict-origin-when-cross-origin"
-                    className="w-full h-full border-0"
-                  />
-                </div>
-                <div className="flex items-center justify-between gap-2 text-[10px] font-mono-poster text-[var(--ink-muted)]">
-                  <span className="truncate">{t.hostHint}</span>
-                  <a
-                    href={watchUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1 text-[var(--accent)] font-bold shrink-0 hover:underline"
-                  >
-                    <span>{t.ytOpen}</span>
-                    <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                  </a>
-                </div>
-              </>
-            ) : (
-              <div className="p-3 border border-[var(--border-soft)] bg-[var(--bg-surface-soft)]">
-                <div className="flex items-center justify-between gap-2 mb-1.5">
-                  <span className="font-display font-black text-xs text-[var(--ink)]">
-                    {t.synthTitle}
-                  </span>
-                  <span className="font-mono-poster text-[10px] font-bold text-[var(--accent)] uppercase">
-                    {playing ? 'LIVE ♪' : 'READY'}
-                  </span>
-                </div>
-                <p className="text-[11px] text-[var(--ink-muted)] leading-snug">{t.synthHint}</p>
-              </div>
-            )}
-          </motion.div>
+        {/* YouTube Player (stays mounted in DOM for continuous playback) */}
+        <div className={mode === 'youtube' ? 'block' : 'hidden'}>
+          <div className="aspect-video w-full bg-[#1c0914] border border-[var(--border-soft)] overflow-hidden mb-2">
+            <iframe
+              ref={iframeRef}
+              title={`${PROFILE.music.title} — ${PROFILE.music.artist}`}
+              src={embedUrl}
+              onLoad={handleIframeLoad}
+              allow="autoplay; encrypted-media; picture-in-picture"
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="w-full h-full border-0"
+            />
+          </div>
+          <div className="flex items-center justify-between gap-2 text-[10px] font-mono-poster text-[var(--ink-muted)]">
+            <span className="truncate">{t.hostHint}</span>
+            <a
+              href={watchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              tabIndex={expanded ? 0 : -1}
+              className="inline-flex items-center gap-1 text-[var(--accent)] font-bold shrink-0 hover:underline"
+            >
+              <span>{t.ytOpen}</span>
+              <ExternalLink className="w-3 h-3" aria-hidden="true" />
+            </a>
+          </div>
+        </div>
+
+        {/* Built-in Sakura Synth Fallback */}
+        {mode === 'synth' && (
+          <div className="p-3 border border-[var(--border-soft)] bg-[var(--bg-surface-soft)]">
+            <div className="flex items-center justify-between gap-2 mb-1.5">
+              <span className="font-display font-black text-xs text-[var(--ink)]">
+                {t.synthTitle}
+              </span>
+              <span className="font-mono-poster text-[10px] font-bold text-[var(--accent)] uppercase">
+                {playing ? 'LIVE ♪' : 'READY'}
+              </span>
+            </div>
+            <p className="text-[11px] text-[var(--ink-muted)] leading-snug">{t.synthHint}</p>
+          </div>
         )}
-      </AnimatePresence>
+      </div>
 
       <motion.div
         whileHover={{ y: -1 }}
@@ -160,6 +251,8 @@ export function MusicDock({
       >
         <motion.button
           type="button"
+          data-music-play-btn="true"
+          data-sfx-handled="true"
           whileTap={{ scale: 0.9 }}
           onClick={handleTogglePlay}
           aria-label={playing ? t.pause : t.play}
@@ -170,10 +263,10 @@ export function MusicDock({
 
         <div className="min-w-0 hidden sm:block">
           <div className="font-display font-black text-xs text-[var(--ink)] truncate leading-tight">
-            {mode === 'synth' ? t.synthTitle : PROFILE.music.title}
+            {mode === 'youtube' ? PROFILE.music.title : t.synthTitle}
           </div>
           <div className="font-mono-poster text-[10px] font-bold text-[var(--accent)] truncate">
-            {mode === 'synth' ? t.synthArtist : PROFILE.music.artist}
+            {mode === 'youtube' ? PROFILE.music.artist : t.synthArtist}
           </div>
         </div>
 

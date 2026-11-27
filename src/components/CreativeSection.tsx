@@ -54,21 +54,25 @@ export function CreativeSection({ lang, onOpenModal }: CreativeSectionProps) {
                   <motion.button
                     key={art.id}
                     type="button"
-                    initial={{ opacity: 0, scale: 0.9, y: 12 }}
+                    initial={{ opacity: 0, scale: 0.88, y: 14 }}
                     whileInView={{ opacity: 1, scale: 1, y: 0 }}
                     viewport={{ once: true, amount: 'some' }}
-                    transition={{ duration: 0.4, delay: index * 0.05, ease: POSTER_EASE }}
-                    whileHover={{ y: -3, scale: 1.02 }}
-                    whileTap={{ scale: 0.96 }}
+                    transition={{ duration: 0.42, delay: index * 0.055, ease: POSTER_EASE }}
+                    whileHover={{ y: -4, scale: 1.04, rotate: index % 2 === 0 ? -1.5 : 1.5 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={() => onOpenModal({ kind: 'art', index })}
                     aria-label={art.title[lang]}
-                    className="group relative aspect-square overflow-hidden border-2 border-[var(--border-strong)] bg-[var(--bg-surface-soft)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2"
+                    className="group relative aspect-square overflow-hidden border-2 border-[var(--border-strong)] bg-[var(--bg-surface-soft)] cursor-pointer focus-visible:outline-2 focus-visible:outline-[var(--accent)] focus-visible:outline-offset-2 shadow-[2px_2px_0px_var(--border-strong)] hover:shadow-[4px_4px_0px_var(--accent)] transition-shadow"
                   >
                     <img
                       src={art.thumb}
                       alt={art.title[lang]}
                       loading="eager"
-                      className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-300"
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    />
+                    <div
+                      aria-hidden="true"
+                      className="pointer-events-none absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-600 ease-out bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg]"
                     />
                     <span className="absolute bottom-1 left-1 bg-[var(--ink)] text-[var(--bg-canvas)] font-mono-poster text-[10px] font-bold px-1.5 py-0.5 leading-none group-hover:bg-[var(--accent)] group-hover:text-white transition-colors">
                       {art.indexCode}
@@ -107,9 +111,13 @@ export function CreativeSection({ lang, onOpenModal }: CreativeSectionProps) {
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[var(--border-soft)]">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-9 h-9 bg-[var(--bg-surface-soft)] text-[var(--accent)] border-2 border-[var(--border-strong)] flex items-center justify-center shrink-0">
+                        <motion.div
+                          whileHover={{ rotate: -8, scale: 1.08 }}
+                          transition={{ type: 'spring', stiffness: 380, damping: 18 }}
+                          className="w-9 h-9 bg-[var(--bg-surface-soft)] text-[var(--accent)] border-2 border-[var(--border-strong)] flex items-center justify-center shrink-0"
+                        >
                           <Icon className="w-4 h-4" aria-hidden="true" />
-                        </div>
+                        </motion.div>
                         <h3 className="font-display font-black text-lg sm:text-xl text-[var(--ink)] tracking-tight">
                           <MaskedWords key={`${essay.id}-${lang}`} text={essay.title[lang]} stagger={0.04} />
                         </h3>

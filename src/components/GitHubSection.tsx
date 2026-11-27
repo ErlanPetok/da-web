@@ -118,19 +118,19 @@ export function GitHubSection({ lang }: GitHubSectionProps) {
               {repos.map((repo, idx) => (
                 <motion.article
                   key={repo.id}
-                  initial={{ opacity: 0, y: 14 }}
-                  whileInView={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, y: 16, scale: 0.97 }}
+                  whileInView={{ opacity: 1, y: 0, scale: 1 }}
                   viewport={{ once: true, amount: 'some' }}
-                  transition={{ duration: 0.4, delay: idx * 0.06, ease: POSTER_EASE }}
-                  whileHover={{ y: -3, x: 1 }}
-                  className="p-4 sm:p-5 bg-[var(--bg-surface-soft)] border-2 border-[var(--border-strong)] flex flex-col justify-between gap-3"
+                  transition={{ duration: 0.42, delay: idx * 0.06, ease: POSTER_EASE }}
+                  whileHover={{ y: -4, x: 2 }}
+                  className="group p-4 sm:p-5 bg-[var(--bg-surface-soft)] border-2 border-[var(--border-strong)] shadow-[3px_3px_0px_var(--border-strong)] hover:shadow-[5px_5px_0px_var(--accent)] transition-shadow flex flex-col justify-between gap-3"
                 >
                   <div>
                     <a
                       href={repo.html_url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="group inline-flex items-center gap-2 font-display font-black text-base sm:text-lg text-[var(--ink)] hover:text-[var(--accent)] transition-colors mb-1.5"
+                      className="inline-flex items-center gap-2 font-display font-black text-base sm:text-lg text-[var(--ink)] hover:text-[var(--accent)] transition-colors mb-1.5"
                     >
                       <span>{repo.name}</span>
                       <ExternalLink
@@ -149,7 +149,7 @@ export function GitHubSection({ lang }: GitHubSectionProps) {
                       {repo.language || 'Code'}
                     </span>
                     <span className="inline-flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-[var(--accent)]" aria-hidden="true" />
+                      <Star className="w-3.5 h-3.5 text-[var(--accent)] transition-transform group-hover:rotate-12 group-hover:scale-110" aria-hidden="true" />
                       {repo.stargazers_count}
                     </span>
                     <span className="inline-flex items-center gap-1">
