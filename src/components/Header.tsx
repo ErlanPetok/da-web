@@ -30,7 +30,7 @@ export function Header({
   const t = UI_COPY[lang].nav;
 
   return (
-    <header className="sticky top-0 z-40 border-b-2 border-[var(--border-strong)] bg-[var(--bg-canvas)]/98">
+    <header className="sticky top-0 z-40 border-b-2 border-[var(--border-strong)] bg-white/82 dark:bg-[#1f0c18]/90 backdrop-blur-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Left: Brand */}
         <motion.a

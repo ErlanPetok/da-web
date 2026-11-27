@@ -10,7 +10,7 @@
     --bg-surface: #ffffff;
     --bg-surface-soft: #ffe8f0;
     --ink: #381024;
-    --ink-muted: #6e3853;
+    --ink-muted: #5d2b45;
     --accent: #df2974;
     --accent-hover: #bf1b5f;
     --accent-soft: #ff84b7;
@@ -66,6 +66,51 @@
 
 .font-mono-poster {
   font-family: 'JetBrains Mono', monospace;
+}
+
+/* Colorful Multi-Pastel Light Mode Page Background (replaces flat blank pink) */
+.page-canvas-bg {
+  background-color: #fff2f8;
+  background-image:
+    radial-gradient(circle at 8% 14%, rgba(255, 184, 140, 0.55) 0%, transparent 42%),
+    radial-gradient(circle at 92% 12%, rgba(145, 228, 255, 0.58) 0%, transparent 44%),
+    radial-gradient(circle at 86% 48%, rgba(206, 174, 255, 0.52) 0%, transparent 46%),
+    radial-gradient(circle at 12% 56%, rgba(154, 245, 219, 0.52) 0%, transparent 44%),
+    radial-gradient(circle at 76% 88%, rgba(255, 218, 138, 0.52) 0%, transparent 44%),
+    radial-gradient(circle at 22% 90%, rgba(255, 148, 200, 0.48) 0%, transparent 44%),
+    linear-gradient(
+      145deg,
+      #ffd9eb 0%,
+      #ffe7cc 22%,
+      #fff7d1 44%,
+      #d9fbf2 68%,
+      #dceeff 84%,
+      #ecd9ff 100%
+    );
+}
+
+.dark .page-canvas-bg {
+  background-color: #1f0c18;
+  background-image:
+    radial-gradient(circle at 12% 16%, rgba(223, 41, 116, 0.18) 0%, transparent 44%),
+    radial-gradient(circle at 88% 22%, rgba(56, 189, 248, 0.12) 0%, transparent 44%),
+    radial-gradient(circle at 78% 82%, rgba(139, 92, 246, 0.16) 0%, transparent 46%),
+    linear-gradient(155deg, #1f0c18 0%, #261024 55%, #191026 100%);
+}
+
+/* Subtle Colorful Poster Grid Overlay for Light Mode Canvas */
+.page-canvas-grid {
+  background-image:
+    linear-gradient(to right, rgba(223, 41, 116, 0.06) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(56, 189, 248, 0.06) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.dark .page-canvas-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 141, 194, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 141, 194, 0.04) 1px, transparent 1px);
+  background-size: 40px 40px;
 }
 
 /* Vibrant Multi-Hue Pastel Poster Canvas (Inside Hero Border) */

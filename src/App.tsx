@@ -176,11 +176,50 @@ export default function App() {
 
   return (
     <MotionConfig reducedMotion="user">
-      <div className="min-h-screen bg-[var(--bg-canvas)] text-[var(--ink)] transition-colors duration-200">
+      <div className="relative min-h-screen text-[var(--ink)] transition-colors duration-200">
+        {/* Fixed Multi-Pastel Page Backdrop (Rich colorful canvas in Light mode, Berry Midnight in Dark mode) */}
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 pointer-events-none z-0 overflow-hidden page-canvas-bg"
+        >
+          <div className="absolute inset-0 page-canvas-grid opacity-80 dark:opacity-50" />
+          <div className="absolute inset-0 poster-halftone opacity-35 dark:opacity-25" />
+
+          {/* Colorful Ambient Pastel Orbs visible in Light Mode */}
+          <div
+            className="dark:hidden absolute -top-24 -left-24 w-[420px] h-[420px] rounded-full opacity-75 animate-poster-float"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(255,158,205,0.75) 0%, rgba(255,214,153,0.45) 50%, transparent 74%)',
+            }}
+          />
+          <div
+            className="dark:hidden absolute top-[12%] -right-24 w-[440px] h-[440px] rounded-full opacity-70 animate-poster-float-reverse"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(125,211,252,0.7) 0%, rgba(167,243,208,0.42) 52%, transparent 74%)',
+            }}
+          />
+          <div
+            className="dark:hidden absolute top-[46%] -left-28 w-[400px] h-[400px] rounded-full opacity-65 animate-poster-float-reverse"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(167,243,208,0.72) 0%, rgba(253,230,138,0.42) 52%, transparent 74%)',
+            }}
+          />
+          <div
+            className="dark:hidden absolute bottom-[8%] -right-24 w-[460px] h-[460px] rounded-full opacity-70 animate-poster-float"
+            style={{
+              background:
+                'radial-gradient(circle, rgba(196,181,253,0.72) 0%, rgba(244,114,182,0.36) 52%, transparent 74%)',
+            }}
+          />
+        </div>
+
         {/* Scroll progress indicator */}
         <div
           aria-hidden="true"
-          className="fixed top-0 left-0 h-1 bg-[var(--accent)] z-50 transition-[width] duration-75"
+          className="fixed top-0 left-0 h-1 bg-gradient-to-r from-[#ff4d94] via-[#ffb74d] via-[#5eead4] via-[#60a5fa] to-[#c084fc] z-50 transition-[width] duration-75"
           style={{ width: `${scrollProgress}%` }}
         />
 
@@ -194,7 +233,7 @@ export default function App() {
           onToggleSfx={handleToggleSfx}
         />
 
-        <main>
+        <main className="relative z-10">
           <PosterHero lang={lang} />
           <AboutPoster lang={lang} />
           <SkillsConstellation
@@ -223,7 +262,7 @@ export default function App() {
           <ContactSection lang={lang} onToast={showToast} />
         </main>
 
-        <footer className="border-t-2 border-[var(--border-strong)] bg-[var(--bg-surface)] py-8 pb-24 sm:pb-10 px-4 sm:px-6 lg:px-8">
+        <footer className="relative z-10 border-t-2 border-[var(--border-strong)] bg-[var(--bg-surface)]/95 backdrop-blur-sm py-8 pb-24 sm:pb-10 px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
             <motion.button
               type="button"
